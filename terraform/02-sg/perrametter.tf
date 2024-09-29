@@ -16,11 +16,6 @@ resource "aws_ssm_parameter" "frontend" {
   value = module.frontend.sg_id
 }
 
-resource "aws_ssm_parameter" "ansible" {
-  name  = "/${var.project}/${var.env}/ansible_sg_id"
-  type  = "String"
-  value = module.ansible.sg_id
-}
 
 resource "aws_ssm_parameter" "bastion" {
   name  = "/${var.project}/${var.env}/bastion_sg_id"
