@@ -7,5 +7,5 @@ common_tags = {
   Terrafom    = "teue"
 }
 
-component     = "ansible"
+component     = "bastion"
 instance_type = "t3.micro"

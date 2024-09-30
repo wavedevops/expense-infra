@@ -8,28 +8,31 @@ module "database" {
 }
 
 resource "aws_security_group_rule" "database" {
-  type              = "ingress"
-  from_port         = 3306
-  to_port           = 3306
-  protocol          = "tcp"
+  description              = "database"
+  type                     = "ingress"
+  from_port                = 3306
+  to_port                  = 3306
+  protocol                 = "tcp"
   source_security_group_id = module.backend.sg_id
-  security_group_id = module.database.sg_id
+  security_group_id        = module.database.sg_id
 }
 
 resource "aws_security_group_rule" "db_bastion" {
-  type              = "ingress"
-  from_port         = 3306
-  to_port           = 3306
-  protocol          = "tcp"
+  description              = "bastion-sg"
+  type                     = "ingress"
+  from_port                = 3306
+  to_port                  = 3306
+  protocol                 = "tcp"
   source_security_group_id = module.bastion.sg_id
-  security_group_id = module.database.sg_id
+  security_group_id        = module.database.sg_id
 }
 
 resource "aws_security_group_rule" "db_vpn" {
-  type              = "ingress"
-  from_port         = 3306
-  to_port           = 3306
-  protocol          = "tcp"
+  description              = "vpn-sg"
+  type                     = "ingress"
+  from_port                = 3306
+  to_port                  = 3306
+  protocol                 = "tcp"
   source_security_group_id = module.vpn.sg_id
-  security_group_id = module.database.sg_id
+  security_group_id        = module.database.sg_id
 }

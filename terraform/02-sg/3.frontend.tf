@@ -8,15 +8,17 @@ module "frontend" {
 }
 
 resource "aws_security_group_rule" "frontend_public_alb" {
+  description = "public-alb-sg"
   type              = "ingress"
   from_port         = 80
   to_port           = 80
   protocol          = "tcp"
-  source_security_group_id = module.public_alb.sg_id
+  source_security_group_id = module.web_alb.sg_id
   security_group_id = module.frontend.sg_id
 }
 
 resource "aws_security_group_rule" "frontend_bastion" {
+  description = "bastion-sg"
   type              = "ingress"
   from_port         = 22
   to_port           = 22
@@ -26,6 +28,7 @@ resource "aws_security_group_rule" "frontend_bastion" {
 }
 
 resource "aws_security_group_rule" "frontend_vpn" {
+  description = "vpn-sg"
   type              = "ingress"
   from_port         = 22
   to_port           = 22

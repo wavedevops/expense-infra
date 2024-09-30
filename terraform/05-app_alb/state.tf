@@ -12,7 +12,7 @@ provider "cloudflare" {
 terraform {
   backend "s3" {
     bucket = "chowdary-hari"                 # S3 bucket name for storing Terraform state
-    key    = "test/apps/terraform.state"      # State file path inside the S3 bucket
+    key    = "test/app_alb/terraform.state"      # State file path inside the S3 bucket
     region = "us-east-1"                     # AWS region where the S3 bucket is located
   }
 
@@ -22,4 +22,14 @@ terraform {
       version = "~> 4.0"                     # Pin version to avoid breaking changes
     }
   }
+}
+
+## for cloud flair
+
+data "aws_ssm_parameter" "token" {
+  name = "api_token"
+}
+
+data "cloudflare_zone" "zone" {
+  name = "chowdary.cloud"
 }

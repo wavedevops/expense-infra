@@ -1,7 +1,7 @@
 resource "cloudflare_record" "bastion" {
   zone_id = data.cloudflare_zone.zone.id
   name    = var.component
-  content = aws_instance.bastion.private_ip
+  content = aws_instance.vpn.public_ip
   type    = "A"
   ttl     = 60
   proxied = false
