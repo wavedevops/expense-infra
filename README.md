@@ -30,7 +30,7 @@
 10. **Create Load Balancer Listener Rules for Routing**  
     Listener rules are added to the ALB to route incoming requests to the instances based on specific host header conditions (e.g., `environment.example.com`).
 
-### Backend Deployment Process
+## Backend Deployment Process
 
 1. Create EC2 Instance
 2. Provision Files and Execute Script
@@ -44,7 +44,7 @@
 10. Create Load Balancer Listener Rule
 
 
-### Frontend Deployment Process
+## Frontend Deployment Process
 
 1. Create EC2 Instance for Frontend
 2. Provision and Execute Frontend Deployment Script
