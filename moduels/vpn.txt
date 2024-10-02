@@ -1,0 +1,9 @@
+During normal operation, OpenVPN AS can be accessed via these URLs:
+Admin  UI: https://3.238.91.211:943/admin
+Client UI: https://3.238.91.211:943/
+To login please use the "openvpn" account with  the password you specified during the setup.
+
+
+https://44.197.239.67:943/
+https://vpn.chowdary.cloud:943/admin
+

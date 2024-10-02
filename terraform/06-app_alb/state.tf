@@ -19,7 +19,6 @@ terraform {
   required_providers {
     cloudflare = {
       source  = "cloudflare/cloudflare"      # Use Cloudflare provider from official source
-      version = "~> 4.0"                     # Pin version to avoid breaking changes
     }
   }
 }
