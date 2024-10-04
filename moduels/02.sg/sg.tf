@@ -1,3 +1,15 @@
+variable "ingress_rules" { ## it means not create security inbound tropic then default
+  type = list
+  default = [
+    #     {
+    #       from_port = 0
+    #       to_port = 0
+    #       protocol = "-1"
+    #       cidr_blocks = ["0.0.0.0/0"]
+    #     }
+  ]
+}
+
 resource "aws_security_group" "sg" {
   name        = "${var.project}-${var.component}-${var.env}"
   description = "SG for ${var.component} ${var.env} Instances"

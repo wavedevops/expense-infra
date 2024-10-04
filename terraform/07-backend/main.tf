@@ -174,18 +174,18 @@ resource "aws_autoscaling_policy" "backend" {
   }
 }
 
-# resource "aws_lb_listener_rule" "backend" {
-#   listener_arn = data.aws_ssm_parameter.app_alb_listener_arn.value
-#   priority     = 100 # less number will be first validated
-#
-#   action {
-#     type             = "forward"
-#     target_group_arn = aws_lb_target_group.backend.arn
-#   }
-#
-#   condition {
-#     host_header {
-#       values = ["backend.app-${var.environment}.${var.zone_name}"]
-#     }
-#   }
-# }
+resource "aws_lb_listener_rule" "backend" {
+  listener_arn = data.aws_ssm_parameter.app_alb_listener_arn.value
+  priority     = 100 # less number will be first validated
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.backend.arn
+  }
+
+  condition {
+    host_header {
+      values = ["backend.app-${var.environment}.${var.zone_name}"]
+    }
+  }
+}

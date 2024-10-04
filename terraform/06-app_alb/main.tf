@@ -1,5 +1,5 @@
 resource "aws_lb" "app_alb" {
-  name               = "${var.common_tags.project}-${var.common_tags.env}-${var.common_tags.component}"
+  name               = "${var.project}-${var.env}-${var.component}"
   internal           = true
   load_balancer_type = "application"
   security_groups    = [ data.aws_ssm_parameter.app_alb_sg_id.value ]
@@ -10,7 +10,7 @@ resource "aws_lb" "app_alb" {
   tags = merge(
     var.common_tags,
     {
-      Name = "${var.common_tags.project}-${var.common_tags.env}-${var.common_tags.component}"
+      Name = "${var.project}-${var.env}-${var.component}"
     }
   )
 }
@@ -23,15 +23,15 @@ resource "aws_lb_listener" "http" {
     type = "fixed-response"
 
     fixed_response {
-      content_type = "text/plain"
-      message_body = "<h1>This is Fixed response content</h1>"
+      content_type = "text/html"
+      message_body = "<h1>This is Fixed response content hari</h1>"
       status_code  = "200"
     }
   }
 }
 
 resource "aws_ssm_parameter" "app_alb_listener_arn" {
-  name        = "${var.common_tags.project}-${var.common_tags.env}-${var.common_tags.component}-app-alb-listener-arn"
+  name        = "${var.project}-${var.env}-${var.component}-app-alb-listener-arn"
   type        = "String"
   value       = aws_lb_listener.http.arn
   description = "ARN of the Application Load Balancer listener"
@@ -39,21 +39,20 @@ resource "aws_ssm_parameter" "app_alb_listener_arn" {
   tags = merge(
     var.common_tags,
     {
-      Name = "${var.common_tags.project}-${var.common_tags.env}-${var.common_tags.component}-app-alb-listener-arn"
+      Name = "${var.project}-${var.env}-${var.component}-app-alb-listener-arn"
     }
   )
 }
-
-resource "cloudflare_record" "bastion" {
+## https://44.192.97.148:943/
+resource "cloudflare_record" "app_alb" {
   zone_id = data.cloudflare_zone.zone.id
   name    = "*.app-${var.common_tags.env}"
-  value   = aws_lb.app_alb.dns_name
-  type    = "A"
+  content = aws_lb.app_alb.dns_name
+  type    = "CNAME"
   ttl     = 60
   proxied = false
   allow_overwrite = true
 
-  # Lifecycle rules to create before destroying the old one
   lifecycle {
     create_before_destroy = true
   }

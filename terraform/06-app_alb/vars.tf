@@ -1,3 +1,12 @@
+variable "env" {
+  default = "dev"
+}
+variable "project" {
+  default = "expense"
+}
+variable "component" {
+  default = "app_alb"
+}
 variable "common_tags" {
   type = map(string)
   default = {
@@ -7,12 +16,4 @@ variable "common_tags" {
     component = "app-alb"
   }
 }
-variable "component" {
-  default = "app_alb"
-}
-variable "env" {
-  default = "dev"
-}
-variable "project" {
-  default = "expense"
-}
+
