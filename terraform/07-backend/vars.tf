@@ -16,3 +16,6 @@ variable "env" {
 variable "project" {
   default = "expense"
 }
+variable "zone_name" {
+  default = "chowdary.cloud"
+}

@@ -63,13 +63,7 @@ module "db" {
 
 }
 
-# module "record" {
-#   source = "../../moduels/03.dns"
-#   zone_id = data.cloudflare_zone.zone.id
-#   component = "db"
-#   dns_record = module.db.db_instance_address
-#   record_type = "CNAME"
-# }
+
 resource "cloudflare_record" "db" {
   zone_id = data.cloudflare_zone.zone.id
   name    = "db-${var.env}"

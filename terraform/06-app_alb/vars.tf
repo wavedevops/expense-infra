@@ -5,8 +5,9 @@ variable "project" {
   default = "expense"
 }
 variable "component" {
-  default = "app_alb"
+  default = "app-alb"
 }
+
 variable "common_tags" {
   type = map(string)
   default = {

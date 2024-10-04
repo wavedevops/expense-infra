@@ -52,7 +52,7 @@ resource "aws_ec2_instance_state" "stop_backend" {
 }
 
 resource "aws_ami_from_instance" "backend" {
-  name               = "${var.common_tags.project}-${var.common_tags.env}-${var.common_tags.component}"
+  name               = "${var.project}-${var.env}-${var.component}"
   source_instance_id = aws_instance.backend.id
   depends_on = [ aws_ec2_instance_state.stop_backend ]
 }
@@ -85,7 +85,7 @@ resource "null_resource" "backend_delete" {
 }
 
 resource "aws_lb_target_group" "backend" {
-  name     = "${var.common_tags.project}-${var.common_tags.env}-${var.common_tags.component}"
+  name     = "${var.project}-${var.env}-${var.component}"
   port     = 8080
   protocol = "HTTP"
   vpc_id   = data.aws_ssm_parameter.vpc_id.value
@@ -100,7 +100,7 @@ resource "aws_lb_target_group" "backend" {
 }
 
 resource "aws_launch_template" "backend" {
-  name = "${var.common_tags.project}-${var.common_tags.env}-${var.common_tags.component}"
+  name = "${var.project}-${var.env}-${var.component}"
 
   image_id = aws_ami_from_instance.backend.id
   instance_initiated_shutdown_behavior = "terminate"
@@ -115,14 +115,14 @@ resource "aws_launch_template" "backend" {
     tags = merge(
       var.common_tags,
       {
-        Name = "${var.common_tags.project}-${var.common_tags.env}-${var.common_tags.component}"
+        Name = "${var.project}-${var.env}-${var.component}"
       }
     )
   }
 }
 
 resource "aws_autoscaling_group" "backend" {
-  name                      = "${var.common_tags.project}-${var.common_tags.env}-${var.common_tags.component}"
+  name                      = "${var.project}-${var.env}-${var.component}"
   max_size                  = 5
   min_size                  = 1
   health_check_grace_period = 60
@@ -145,7 +145,7 @@ resource "aws_autoscaling_group" "backend" {
 
   tag {
     key                 = "Name"
-    value               = "${var.common_tags.project}-${var.common_tags.env}-${var.common_tags.component}"
+    value               = "${var.project}-${var.env}-${var.component}"
     propagate_at_launch = true
   }
 
@@ -161,7 +161,7 @@ resource "aws_autoscaling_group" "backend" {
 }
 
 resource "aws_autoscaling_policy" "backend" {
-  name                   = "${var.common_tags.project}-${var.common_tags.env}-${var.common_tags.component}"
+  name                   = "${var.project}-${var.env}-${var.component}"
   policy_type            = "TargetTrackingScaling"
   autoscaling_group_name = aws_autoscaling_group.backend.name
 
@@ -176,7 +176,7 @@ resource "aws_autoscaling_policy" "backend" {
 
 resource "aws_lb_listener_rule" "backend" {
   listener_arn = data.aws_ssm_parameter.app_alb_listener_arn.value
-  priority     = 100 # less number will be first validated
+  priority     = 100
 
   action {
     type             = "forward"
@@ -185,7 +185,7 @@ resource "aws_lb_listener_rule" "backend" {
 
   condition {
     host_header {
-      values = ["backend.app-${var.environment}.${var.zone_name}"]
+      values = ["backend.app-${var.env}.${var.zone_name}"]
     }
   }
 }
