@@ -24,7 +24,8 @@ resource "aws_lb_listener" "http" {
 }
 
 
-## https://44.192.97.148:943/
+## https://vpn.chowdary.cloud:943/admin
+## https://vpn.chowdary.cloud:943/
 resource "cloudflare_record" "app_alb" {
   zone_id         = data.cloudflare_zone.zone.id
   name            = "*.app-${var.common_tags.env}"

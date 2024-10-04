@@ -17,30 +17,23 @@ resource "null_resource" "backend" {
     instance_id = aws_instance.backend.id
   }
 
-  provisioner "file" {
-    source      = "${var.common_tags.Component}.sh"
-    destination = "/tmp/${var.common_tags.Component}.sh"
+  connection {
+    type     = "ssh"
+    user     = "ec2-user"
+    password = "DevOps321"
+    host     = aws_instance.backend.private_ip
+  }
 
-    connection {
-      type     = "ssh"
-      user     = "ec2-user"
-      password = "DevOps321"
-      host     = aws_instance.backend.private_ip
-    }
+  provisioner "file" {
+    source      = "${var.common_tags.component}.sh"
+    destination = "/tmp/${var.common_tags.component}.sh"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /tmp/${var.common_tags.Component}.sh",
-      "sudo sh /tmp/${var.common_tags.Component}.sh ${var.common_tags.Component} ${var.common_tags.env}"
+      "chmod +x /tmp/${var.common_tags.component}.sh",
+      "sudo sh /tmp/${var.common_tags.component}.sh ${var.common_tags.component} ${var.env}"
     ]
-
-    connection {
-      type     = "ssh"
-      user     = "ec2-user"
-      password = "DevOps321"
-      host     = aws_instance.backend.private_ip
-    }
   }
 }
 

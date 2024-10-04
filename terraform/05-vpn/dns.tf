@@ -1,4 +1,4 @@
-resource "cloudflare_record" "bastion" {
+resource "cloudflare_record" "vpn" {
   zone_id = data.cloudflare_zone.zone.id
   name    = var.component
   content = aws_instance.vpn.public_ip

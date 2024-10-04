@@ -8,7 +8,7 @@ variable "common_tags" {
   }
 }
 variable "component" {
-  default = "app_alb"
+  default = "backend"
 }
 variable "env" {
   default = "dev"
