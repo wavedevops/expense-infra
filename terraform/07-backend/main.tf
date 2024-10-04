@@ -53,28 +53,21 @@ resource "aws_ami_from_instance" "backend" {
 
 resource "null_resource" "backend_delete" {
   triggers = {
-    instance_id = aws_instance.backend.id  # This will trigger every time the instance is created.
+    instance_id = aws_instance.backend.id
+  }
+
+  connection {
+    type     = "ssh"
+    user     = "ec2-user"
+    password = "DevOps321"
+    host     = aws_instance.backend.private_ip
   }
 
   provisioner "local-exec" {
     command = "aws ec2 terminate-instances --instance-ids ${aws_instance.backend.id}"
   }
 
-  provisioner "remote-exec" {
-    inline = [
-      "echo 'Instance ${aws_instance.backend.id} is being terminated.'"
-    ]
-
-    connection {
-      type     = "ssh"
-      user     = "ec2-user"
-      password = "DevOps321"
-      host     = aws_instance.backend.private_ip
-    }
-  }
-
-  # Ensure the deletion only happens after the AMI creation is complete.
-  depends_on = [aws_ami_from_instance.backend]
+  depends_on = [ aws_ami_from_instance.backend ]
 }
 
 resource "aws_lb_target_group" "backend" {
