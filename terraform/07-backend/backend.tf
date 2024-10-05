@@ -21,19 +21,16 @@ resource "null_resource" "backend" {
   triggers = {
     instance_id = module.backend.id # this will be triggered everytime instance is created
   }
-
   connection {
     type     = "ssh"
     user     = "ec2-user"
     password = "DevOps321"
     host     = module.backend.private_ip
   }
-
   provisioner "file" {
     source      = "${var.component}.sh"
     destination = "/tmp/${var.component}.sh"
   }
-
   provisioner "remote-exec" {
     inline = [
       "chmod +x /tmp/${var.component}.sh",
@@ -55,24 +52,25 @@ resource "aws_ami_from_instance" "backend" {
   depends_on = [ aws_ec2_instance_state.backend ]
 }
 
-resource "null_resource" "backend_delete" {
-  triggers = {
-    instance_id = module.backend.id # this will be triggered everytime instance is created
-  }
-
-  connection {
-    type     = "ssh"
-    user     = "ec2-user"
-    password = "DevOps321"
-    host     = module.backend.private_ip
-  }
-
-  provisioner "local-exec" {
-    command = "aws ec2 terminate-instances --instance-ids ${module.backend.id}"
-  }
-
-  depends_on = [ aws_ami_from_instance.backend ]
-}
+# present not need then comment
+# resource "null_resource" "backend_delete" {
+#   triggers = {
+#     instance_id = module.backend.id # this will be triggered everytime instance is created
+#   }
+#
+#   connection {
+#     type     = "ssh"
+#     user     = "ec2-user"
+#     password = "DevOps321"
+#     host     = module.backend.private_ip
+#   }
+#
+#   provisioner "local-exec" {
+#     command = "aws ec2 terminate-instances --instance-ids ${module.backend.id}"
+#   }
+#
+#   depends_on = [ aws_ami_from_instance.backend ]
+# }
 
 
 resource "aws_lb_target_group" "backend" {
@@ -110,47 +108,22 @@ resource "aws_launch_template" "backend" {
       }
     )
   }
+  depends_on = [ aws_ami_from_instance.backend ]
 }
 
 
-# resource "aws_autoscaling_group" "backend" {
-#   name                      = "${var.project}-${var.env}-${var.component}"
-#   max_size                  = 5
-#   min_size                  = 1
-#   health_check_grace_period = 60
-#   health_check_type         = "ELB"
-#   desired_capacity          = 1
-#   target_group_arns = [aws_lb_target_group.backend.arn]
-#   launch_template {
-#     id      = aws_launch_template.backend.id
-#     version = "$Latest"
-#   }
-#   vpc_zone_identifier       = split(",", data.aws_ssm_parameter.private_subnet_id.value)
-#
-#   instance_refresh {
-#     strategy = "Rolling"
-#     preferences {
-#       min_healthy_percentage = 50
-#     }
-#     triggers = ["launch_template"]
-#   }
-#
-#   tag {
-#     key                 = "Name"
-#     value               = "${var.project}-${var.env}-${var.component}"
-#     propagate_at_launch = true
-#   }
-#
-#   timeouts {
-#     delete = "15m"
-#   }
-#
-#   tag {
-#     key                 = "Project"
-#     value               = "${var.project}"
-#     propagate_at_launch = false
-#   }
-# }
+module "alb_backend" {
+  source             = "../../moduels/04.alb"
+  name               = "${var.project}-${var.env}-${var.component}"
+  internal           = "true"
+  load_balancer_type = "application"
+  security_groups    = [data.aws_ssm_parameter.app_alb_sg_id.value]
+  subnets            = split(",", data.aws_ssm_parameter.private_subnet_id.value)
+  common_tags        = var.common_tags
+  depends_on         = [ aws_ami_from_instance.backend ]
+}
+
+
 
 resource "aws_autoscaling_group" "backend" {
   name                      = "${var.project}-${var.env}-${var.component}"
@@ -161,6 +134,10 @@ resource "aws_autoscaling_group" "backend" {
   desired_capacity          = 1
   target_group_arns         = [aws_lb_target_group.backend.arn]
   vpc_zone_identifier       = split(",", data.aws_ssm_parameter.private_subnet_id.value)
+  depends_on = [
+    aws_lb_target_group.backend,
+    aws_launch_template.backend
+  ]
 
   launch_template {
     id      = aws_launch_template.backend.id
@@ -205,20 +182,20 @@ resource "aws_autoscaling_policy" "backend" {
   }
 }
 
-resource "aws_lb_listener_rule" "backend" {
-  listener_arn = module.alb_backend.lb_arn
-  priority     = 100 # less number will be first validated
-
-  action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.backend.arn
-  }
-
-  condition {
-    host_header {
-      values = ["backend.app-${var.env}.${var.zone_name}"]
-    }
-  }
-}
+# resource "aws_lb_listener_rule" "backend" {
+#   listener_arn = module.alb_backend.lb_arn
+#   priority     = 100 # less number will be first validated
+#
+#   action {
+#     type             = "forward"
+#     target_group_arn = aws_lb_target_group.backend.arn
+#   }
+#
+#   condition {
+#     host_header {
+#       values = ["backend.app-${var.env}.${data.cloudflare_zone.zone.name}"]
+#     }
+#   }
+# }
 
 

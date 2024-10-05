@@ -38,7 +38,7 @@
 #
 #
 # ## https://vpn.chowdary.cloud:943/admin
-# ## https://vpn.chowdary.cloud:943/
+# ## https://18.207.107.3:943/
 #
 #
 #
