@@ -22,3 +22,4 @@ resource "cloudflare_record" "app_alb" {
     create_before_destroy = true
   }
 }
+

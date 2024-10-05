@@ -113,6 +113,45 @@ resource "aws_launch_template" "backend" {
 }
 
 
+# resource "aws_autoscaling_group" "backend" {
+#   name                      = "${var.project}-${var.env}-${var.component}"
+#   max_size                  = 5
+#   min_size                  = 1
+#   health_check_grace_period = 60
+#   health_check_type         = "ELB"
+#   desired_capacity          = 1
+#   target_group_arns = [aws_lb_target_group.backend.arn]
+#   launch_template {
+#     id      = aws_launch_template.backend.id
+#     version = "$Latest"
+#   }
+#   vpc_zone_identifier       = split(",", data.aws_ssm_parameter.private_subnet_id.value)
+#
+#   instance_refresh {
+#     strategy = "Rolling"
+#     preferences {
+#       min_healthy_percentage = 50
+#     }
+#     triggers = ["launch_template"]
+#   }
+#
+#   tag {
+#     key                 = "Name"
+#     value               = "${var.project}-${var.env}-${var.component}"
+#     propagate_at_launch = true
+#   }
+#
+#   timeouts {
+#     delete = "15m"
+#   }
+#
+#   tag {
+#     key                 = "Project"
+#     value               = "${var.project}"
+#     propagate_at_launch = false
+#   }
+# }
+
 resource "aws_autoscaling_group" "backend" {
   name                      = "${var.project}-${var.env}-${var.component}"
   max_size                  = 5
@@ -120,19 +159,19 @@ resource "aws_autoscaling_group" "backend" {
   health_check_grace_period = 60
   health_check_type         = "ELB"
   desired_capacity          = 1
-  target_group_arns = [aws_lb_target_group.backend.arn]
+  target_group_arns         = [aws_lb_target_group.backend.arn]
+  vpc_zone_identifier       = split(",", data.aws_ssm_parameter.private_subnet_id.value)
+
   launch_template {
     id      = aws_launch_template.backend.id
     version = "$Latest"
   }
-  vpc_zone_identifier       = split(",", data.aws_ssm_parameter.private_subnet_id.value)
 
   instance_refresh {
     strategy = "Rolling"
     preferences {
       min_healthy_percentage = 50
     }
-    triggers = ["launch_template"]
   }
 
   tag {
@@ -181,3 +220,5 @@ resource "aws_lb_listener_rule" "backend" {
     }
   }
 }
+
+
