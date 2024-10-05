@@ -123,7 +123,20 @@ module "alb_backend" {
   depends_on         = [ aws_ami_from_instance.backend ]
 }
 
+resource "aws_lb_listener" "http" {
+  load_balancer_arn = module.alb_backend.lb_arn
+  port              = "80"
+  protocol          = "HTTP"
+  default_action {
+    type = "fixed-response"
 
+    fixed_response {
+      content_type = "text/html"
+      message_body = "<h1>This is Fixed response content hari</h1>"
+      status_code  = "200"
+    }
+  }
+}
 
 resource "aws_autoscaling_group" "backend" {
   name                      = "${var.project}-${var.env}-${var.component}"
@@ -182,20 +195,20 @@ resource "aws_autoscaling_policy" "backend" {
   }
 }
 
-# resource "aws_lb_listener_rule" "backend" {
-#   listener_arn = module.alb_backend.lb_arn
-#   priority     = 100 # less number will be first validated
-#
-#   action {
-#     type             = "forward"
-#     target_group_arn = aws_lb_target_group.backend.arn
-#   }
-#
-#   condition {
-#     host_header {
-#       values = ["backend.app-${var.env}.${data.cloudflare_zone.zone.name}"]
-#     }
-#   }
-# }
+resource "aws_lb_listener_rule" "backend" {
+  listener_arn = module.alb_backend.lb_arn
+  priority     = 100 # less number will be first validated
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.backend.arn
+  }
+
+  condition {
+    host_header {
+      values = ["backend.app-${var.env}.${data.cloudflare_zone.zone.name}"]
+    }
+  }
+}
 
 
