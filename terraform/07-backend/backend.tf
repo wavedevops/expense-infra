@@ -52,26 +52,24 @@ resource "aws_ami_from_instance" "backend" {
   depends_on = [ aws_ec2_instance_state.backend ]
 }
 
-# present not need then comment
-# resource "null_resource" "backend_delete" {
-#   triggers = {
-#     instance_id = module.backend.id # this will be triggered everytime instance is created
-#   }
-#
-#   connection {
-#     type     = "ssh"
-#     user     = "ec2-user"
-#     password = "DevOps321"
-#     host     = module.backend.private_ip
-#   }
-#
-#   provisioner "local-exec" {
-#     command = "aws ec2 terminate-instances --instance-ids ${module.backend.id}"
-#   }
-#
-#   depends_on = [ aws_ami_from_instance.backend ]
-# }
+resource "null_resource" "backend_delete" {
+  triggers = {
+    instance_id = module.backend.id # this will be triggered everytime instance is created
+  }
 
+  connection {
+    type     = "ssh"
+    user     = "ec2-user"
+    password = "DevOps321"
+    host     = module.backend.private_ip
+  }
+
+  provisioner "local-exec" {
+    command = "aws ec2 terminate-instances --instance-ids ${module.backend.id}"
+  }
+
+  depends_on = [ aws_ami_from_instance.backend ]
+}
 
 resource "aws_lb_target_group" "backend" {
   name     = "${var.project}-${var.env}-${var.component}"
@@ -109,33 +107,6 @@ resource "aws_launch_template" "backend" {
     )
   }
   depends_on = [ aws_ami_from_instance.backend ]
-}
-
-
-module "alb_backend" {
-  source             = "../../moduels/04.alb"
-  name               = "${var.project}-${var.env}-${var.component}"
-  internal           = "true"
-  load_balancer_type = "application"
-  security_groups    = [data.aws_ssm_parameter.app_alb_sg_id.value]
-  subnets            = split(",", data.aws_ssm_parameter.private_subnet_id.value)
-  common_tags        = var.common_tags
-  depends_on         = [ aws_ami_from_instance.backend ]
-}
-
-resource "aws_lb_listener" "http" {
-  load_balancer_arn = module.alb_backend.lb_arn
-  port              = "80"
-  protocol          = "HTTP"
-  default_action {
-    type = "fixed-response"
-
-    fixed_response {
-      content_type = "text/html"
-      message_body = "<h1>This is Fixed response content hari</h1>"
-      status_code  = "200"
-    }
-  }
 }
 
 resource "aws_autoscaling_group" "backend" {
@@ -192,22 +163,6 @@ resource "aws_autoscaling_policy" "backend" {
     }
 
     target_value = 10.0
-  }
-}
-
-resource "aws_lb_listener_rule" "backend" {
-  listener_arn = module.alb_backend.lb_arn
-  priority     = 100 # less number will be first validated
-
-  action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.backend.arn
-  }
-
-  condition {
-    host_header {
-      values = ["backend.app-${var.env}.${data.cloudflare_zone.zone.name}"]
-    }
   }
 }
 
