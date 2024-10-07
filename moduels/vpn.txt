@@ -7,3 +7,4 @@ To login please use the "openvpn" account with  the password you specified durin
 https://44.197.239.67:943/
 https://vpn.chowdary.cloud:943/admin
 
+The Terraform null_resource is a placeholder resource used to run provisioners or execute actions based on changes in dependencies or triggers, without creating actual infrastructure.

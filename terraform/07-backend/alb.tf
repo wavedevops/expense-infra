@@ -25,7 +25,6 @@ resource "aws_lb_listener" "http" {
   }
 }
 
-
 resource "aws_lb_listener_rule" "backend" {
   listener_arn = aws_lb_listener.http.arn
   priority     = 100

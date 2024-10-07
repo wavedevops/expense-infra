@@ -57,13 +57,6 @@ resource "null_resource" "backend_delete" {
     instance_id = module.backend.id # this will be triggered everytime instance is created
   }
 
-  connection {
-    type     = "ssh"
-    user     = "ec2-user"
-    password = "DevOps321"
-    host     = module.backend.private_ip
-  }
-
   provisioner "local-exec" {
     command = "aws ec2 terminate-instances --instance-ids ${module.backend.id}"
   }
