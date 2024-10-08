@@ -1,5 +1,5 @@
 ## db
-resource "aws_security_group_rule" "vpn_ssh_default_sg" {
+resource "aws_security_group_rule" "db_allow_all" {
   description       = "Allow SSH access from allow all security group"
   type              = "ingress"
   from_port         = 3306
@@ -10,7 +10,7 @@ resource "aws_security_group_rule" "vpn_ssh_default_sg" {
 }
 
 ## backend
-resource "aws_security_group_rule" "vpn_ssh_default_sg" {
+resource "aws_security_group_rule" "backend_ssh_allow_all" {
   description       = "Allow SSH access from allow all security group"
   type              = "ingress"
   from_port         = 22
@@ -20,7 +20,7 @@ resource "aws_security_group_rule" "vpn_ssh_default_sg" {
   security_group_id = module.backend.sg_id  # Reference to your security group ID
 }
 
-resource "aws_security_group_rule" "vpn_ssh_default_sg" {
+resource "aws_security_group_rule" "backend_http_allow_all" {
   description       = "Allow SSH access from allow all security group"
   type              = "ingress"
   from_port         = 8080
@@ -31,7 +31,7 @@ resource "aws_security_group_rule" "vpn_ssh_default_sg" {
 }
 
 ## backend
-resource "aws_security_group_rule" "vpn_ssh_default_sg" {
+resource "aws_security_group_rule" "frontend_ssh_allow_all" {
   description       = "Allow SSH access from allow all security group"
   type              = "ingress"
   from_port         = 22
@@ -41,7 +41,7 @@ resource "aws_security_group_rule" "vpn_ssh_default_sg" {
   security_group_id = module.frontend.sg_id  # Reference to your security group ID
 }
 
-resource "aws_security_group_rule" "vpn_ssh_default_sg" {
+resource "aws_security_group_rule" "frontend_http_allow_all" {
   description       = "Allow SSH access from allow all security group"
   type              = "ingress"
   from_port         = 80
