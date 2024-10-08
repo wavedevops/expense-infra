@@ -16,11 +16,3 @@ data "aws_ssm_parameter" "vpn_sg_id" {
 data "aws_ssm_parameter" "public_subnet_id" {
   name = "/${var.project}/${var.env}/public_subnet_id"
 }
-
-data "aws_ssm_parameter" "token" {
-  name = "api_token"
-}
-
-data "cloudflare_zone" "zone" {
-  name = "chowdary.cloud"
-}

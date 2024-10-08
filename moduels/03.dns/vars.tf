@@ -1,4 +1,5 @@
-variable "component" {}
+variable "name" {}
 variable "zone_id" {}
-variable "dns_record" {}
-variable "record_type" {}
+variable "type" {}
+variable "records" {}
+variable "ttl" {}

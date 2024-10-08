@@ -24,3 +24,8 @@ data "aws_ssm_parameter" "token" {
 data "cloudflare_zone" "zone" {
   name = "chowdary.cloud"
 }
+
+data "aws_route53_zone" "selected" {
+  name         = "chowdary.cloud"
+  private_zone = false
+}
