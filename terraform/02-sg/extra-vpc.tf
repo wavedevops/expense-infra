@@ -71,5 +71,3 @@ resource "aws_security_group_rule" "frontend_http_allow_all" {
   cidr_blocks       = ["172.31.0.0/16"]  # Specify internal network range
   security_group_id = module.frontend.sg_id  # Reference to the frontend security group ID
 }
-
-
