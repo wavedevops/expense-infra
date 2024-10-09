@@ -1,6 +1,7 @@
 resource "aws_key_pair" "vpn" {
   key_name   = "openvpn"
   public_key = file("~/.ssh/openvpn.pub")
+
 }
 
 resource "aws_instance" "vpn" {
@@ -10,6 +11,16 @@ resource "aws_instance" "vpn" {
   instance_type = var.instance_type
   subnet_id = element(split(",", data.aws_ssm_parameter.public_subnet_id.value), 0)
   vpc_security_group_ids = [data.aws_ssm_parameter.vpn_sg_id.value]
+
+  instance_market_options {
+    market_type = "spot"
+
+    spot_options {
+      max_price                      = "0"  # Automatically use the lowest price
+      instance_interruption_behavior = "stop"  # Stop instead of terminate on interruption
+      spot_instance_type             = "persistent"  # Keep instance running even after interruption
+    }
+  }
 
 
   tags = merge(
