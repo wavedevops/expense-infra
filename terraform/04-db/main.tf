@@ -63,18 +63,10 @@ module "db" {
 
 }
 
-
-resource "cloudflare_record" "db" {
-  zone_id = data.cloudflare_zone.zone.id
+resource "aws_route53_record" "record" {
+  zone_id = data.aws_route53_zone.zone.id
   name    = "db-${var.env}"
-  content = module.db.db_instance_address
   type    = "CNAME"
-  ttl     = 60
-  proxied = false
-#   allow_overwrite = true
-
-  # Lifecycle rules to create before destroying the old one
-  lifecycle {
-    create_before_destroy = true
-  }
+  ttl     = "5"
+  records = [ module.db.db_instance_address ]  # Use public_ip instead of id
 }
