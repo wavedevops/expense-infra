@@ -16,3 +16,9 @@ variable "env" {
 variable "project" {
   default = "expense"
 }
+
+variable "web_alb_tags" {
+  default = {
+    Component = "web-alb"
+  }
+}
