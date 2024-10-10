@@ -1,21 +1,22 @@
-module "web_alb" {
-  source = "terraform-aws-modules/alb/aws"
+resource "aws_lb" "web_alb" {
+  name               = "${var.project}-${var.env}-web-alb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [data.aws_ssm_parameter.web_alb_sg_id.value]
+  subnets            = split(",", data.aws_ssm_parameter.public_subnet_id.value)
 
-  internal = false
-  name    = "${var.project}-${var.env}-web-alb"
-  vpc_id  = data.aws_ssm_parameter.vpc_id.value
-  subnets = split(",", data.aws_ssm_parameter.public_subnet_id.value)
-  security_groups = [data.aws_ssm_parameter.web_alb_sg_id.value]
-  create_security_group = false
   enable_deletion_protection = false
+
   tags = merge(
     var.common_tags,
-    var.web_alb_tags
+    {
+      Name = "${var.project}-${var.env}-web-alb"
+    }
   )
 }
 
 resource "aws_lb_listener" "http" {
-  load_balancer_arn = module.web_alb.arn
+  load_balancer_arn = aws_lb.web_alb.arn
   port              = "80"
   protocol          = "HTTP"
 
@@ -24,25 +25,26 @@ resource "aws_lb_listener" "http" {
 
     fixed_response {
       content_type = "text/html"
-      message_body = "<h1>Hello, I am from Application ALB</h1>"
+      message_body = "<h1>This is fixed response from Web ALB</h1>"
       status_code  = "200"
     }
   }
 }
 
 resource "aws_lb_listener" "https" {
-  load_balancer_arn = module.web_alb.arn
+  load_balancer_arn = aws_lb.web_alb.arn
   port              = "443"
+
   protocol          = "HTTPS"
+  certificate_arn   = aws_acm_certificate.expense.arn
   ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = aws_acm_certificate.expense.id
 
   default_action {
     type = "fixed-response"
 
     fixed_response {
       content_type = "text/html"
-      message_body = "<h1>Hello, I am from Web ALB HTTPS</h1>"
+      message_body = "<h1>This is fixed response from Web ALB HTTPS</h1>"
       status_code  = "200"
     }
   }
@@ -51,17 +53,19 @@ resource "aws_lb_listener" "https" {
 
 module "records" {
   source  = "terraform-aws-modules/route53/aws//modules/records"
+  version = "~> 2.0"
 
   zone_name = data.aws_route53_zone.zone.name
+
   records = [
     {
-      name    = "expense-${var.env}" # *.app-dev
+      name    = "web-${var.env}"
       type    = "A"
-      alias   = {
-        name    = module.web_alb.dns_name
-        zone_id = module.web_alb.zone_id # This belongs ALB internal hosted zone, not ours
-      }
       allow_overwrite = true
+      alias   = {
+        name    = aws_lb.web_alb.dns_name
+        zone_id = aws_lb.web_alb.zone_id
+      }
     }
   ]
 }
