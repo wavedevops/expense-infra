@@ -14,6 +14,10 @@ data "aws_ssm_parameter" "private_subnet_id" {
   name = "/${var.project}/${var.env}/private_subnet_id"
 }
 
+data "aws_ssm_parameter" "public_subnet_id" {
+  name = "/${var.project}/${var.env}/public_subnet_id"
+}
+
 
 data "aws_ami" "ami_info" {
   most_recent = true

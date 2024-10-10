@@ -63,12 +63,12 @@ resource "null_resource" "frontend_delete" {
 
 resource "aws_lb_target_group" "frontend" {
   name     = "${var.project}-${var.env}-${var.component}"
-  port     = 8080
+  port     = 80
   protocol = "HTTP"
   vpc_id   = data.aws_ssm_parameter.vpc_id.value
   health_check {
     path                = "/health"
-    port                = 8080
+    port                = 80
     protocol            = "HTTP"
     healthy_threshold   = 2
     unhealthy_threshold = 2

@@ -1,10 +1,10 @@
 module "alb_frontend" {
   source             = "../../moduels/04.alb"
   name               = "${var.project}-${var.env}-${var.component}"
-  internal           = "true"
+  internal           = "false"
   load_balancer_type = "application"
   security_groups    = [data.aws_ssm_parameter.app_alb_sg_id.value]
-  subnets            = split(",", data.aws_ssm_parameter.private_subnet_id.value)
+  subnets            = split(",", data.aws_ssm_parameter.public_subnet_id.value)
   common_tags        = var.common_tags
   depends_on         = [ aws_ami_from_instance.frontend ]
 }
@@ -25,6 +25,24 @@ resource "aws_lb_listener" "http" {
   }
 }
 
+resource "aws_lb_listener" "https" {
+  load_balancer_arn = module.alb_frontend.lb_arn
+  port              = "443"
+
+  protocol          = "HTTPS"
+  certificate_arn   = aws_acm_certificate.expense.arn
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+
+  default_action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/html"
+      message_body = "<h1>This is fixed response from Web ALB HTTPS</h1>"
+      status_code  = "200"
+    }
+  }
+}
 resource "aws_lb_listener_rule" "frontend" {
   listener_arn = aws_lb_listener.http.arn
   priority     = 100
@@ -41,10 +59,14 @@ resource "aws_lb_listener_rule" "frontend" {
   }
 }
 
-resource "aws_route53_record" "record" {
-  zone_id = data.aws_route53_zone.zone.id
-  name    = "vpn"
-  type    = "CNAME"
-  ttl     = "5"
-  records = [ module.alb_frontend.dns_name]
+resource "aws_route53_record" "app_record" {
+  zone_id = data.aws_route53_zone.zone.zone_id
+  name    = "*.app-${var.env}"
+  type    = "A"
+
+  alias {
+    name                   = module.alb_frontend.dns_name
+    zone_id                = module.alb_frontend.zone_id
+    evaluate_target_health = false
+  }
 }
