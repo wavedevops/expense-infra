@@ -16,3 +16,7 @@ data "aws_ssm_parameter" "vpn_sg_id" {
 data "aws_ssm_parameter" "public_subnet_id" {
   name = "/${var.project}/${var.env}/public_subnet_id"
 }
+data "aws_route53_zone" "zone" {
+  name         = "chowdary.cloud"
+  private_zone = false
+}

@@ -14,7 +14,7 @@ resource "aws_security_group_rule" "vpn_ssh" {
   from_port         = 22
   to_port           = 22
   protocol          = "tcp"
-  cidr_blocks       = ["<Your_Office_Public_IP>/32"]  # Restrict to a specific IP
+  cidr_blocks       = ["0.0.0.0/0"]  # Restrict to a specific IP
   security_group_id = module.vpn.sg_id
 }
 

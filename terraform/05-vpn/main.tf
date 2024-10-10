@@ -31,3 +31,13 @@ resource "aws_instance" "vpn" {
   )
 }
 
+
+
+resource "aws_route53_record" "record" {
+  zone_id = data.aws_route53_zone.zone.id
+  name    = "vpn"
+  type    = "A"
+  ttl     = "5"
+  records = [aws_instance.vpn.public_ip]  # Use public_ip instead of id
+}
+
