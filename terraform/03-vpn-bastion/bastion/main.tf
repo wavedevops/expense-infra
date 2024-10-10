@@ -14,7 +14,7 @@ resource "aws_instance" "bastion" {
 
 
 module "dnf" {
-  source = "../../moduels/03.dns"
+  source = "../../../moduels/03.dns"
   zone_id = data.aws_route53_zone.zone.id
   name    = var.component
   type    = "A"
