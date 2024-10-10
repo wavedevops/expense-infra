@@ -59,10 +59,13 @@ resource "aws_lb_listener_rule" "frontend" {
   }
 }
 
+
+# terraform init && terraform plan -target=aws_route53_record.app_record
 resource "aws_route53_record" "app_record" {
   zone_id = data.aws_route53_zone.zone.zone_id
   name    = "*.app-${var.env}"
-  type    = "A"
+  type    = "CNAME"
+  allow_overwrite = true
 
   alias {
     name                   = module.alb_frontend.dns_name
@@ -70,3 +73,23 @@ resource "aws_route53_record" "app_record" {
     evaluate_target_health = false
   }
 }
+
+
+# module "records" {
+#   source  = "terraform-aws-modules/route53/aws//modules/records"
+#   version = "~> 2.0"
+#
+#   zone_name = data.aws_route53_zone.zone.name
+#
+#   records = [
+#     {
+#       name    = "web-${var.env}"
+#       type    = "A"
+#       allow_overwrite = true
+#       alias   = {
+#         name    = module.alb_frontend.dns_name
+#         zone_id = module.alb_frontend.zone_id
+#       }
+#     }
+#   ]
+# }
