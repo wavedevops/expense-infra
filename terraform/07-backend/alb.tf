@@ -41,10 +41,32 @@ resource "aws_lb_listener_rule" "backend" {
   }
 }
 
-resource "aws_route53_record" "record" {
-  zone_id = data.aws_route53_zone.zone.id
-  name    = "vpn"
-  type    = "CNAME"
-  ttl     = "5"
-  records = [ module.alb_backend.dns_name]
+# resource "aws_route53_record" "record" {
+#   zone_id = data.aws_route53_zone.zone.id
+#   name    = "*.app-${var.env}"
+#   type    = "A"
+#   alias {
+#     name    = module.alb_backend.dns_name
+#     zone_id = module.alb_backend.zone_id
+#   }
+#   allow_overwrite = true
+# }
+
+module "records" {
+  source  = "terraform-aws-modules/route53/aws//modules/records"
+  version = "~> 2.0"
+
+  zone_name = data.aws_route53_zone.zone.name
+
+  records = [
+    {
+      name            = "*.app-${var.env}"
+      type            = "A"
+      allow_overwrite = true
+      alias = {
+        name    = module.alb_backend.dns_name
+        zone_id = module.alb_backend.zone_id
+      }
+    }
+  ]
 }
