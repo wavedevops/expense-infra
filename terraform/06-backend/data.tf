@@ -28,4 +28,6 @@ data "aws_route53_zone" "zone" {
   private_zone = false
 }
 
-
+data "aws_ssm_parameter" "app_alb_listener_arn" {
+  name = "/${var.project}/${var.env}/app_alb_listener_arn"
+}
