@@ -95,3 +95,8 @@
 - **Infrastructure as Code (IaC)**: Treating infrastructure as code allows for easy integration with tools like Jenkins, GitHub Actions, or GitLab CI, ensuring that infrastructure changes follow the same review and approval processes as application code.
 
 Overall, this deployment process leverages the power of Terraform and AWS services to create a highly efficient, scalable, and manageable cloud infrastructure that supports both development and production environments.
+
+
+
+for dir in 01-vpc 02-sg 03-vpn-bastion 04-db 05-app-alb 06-backend 07-acm 08-web-alb 09-frontend; do echo "Applying in $dir..."; (cd $dir && make apply ); done
+

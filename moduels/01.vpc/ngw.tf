@@ -35,3 +35,4 @@ resource "aws_route" "database_route" {
   destination_cidr_block    = "0.0.0.0/0"
   nat_gateway_id = aws_nat_gateway.nat.id
 }
+
