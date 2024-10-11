@@ -56,11 +56,11 @@ module "records" {
   source  = "terraform-aws-modules/route53/aws//modules/records"
   version = "~> 2.0"
 
-  zone_name = var.zone_name
+  zone_name = data.aws_route53_zone.zone.name
 
   records = [
     {
-      name    = "web-${var.environment}"
+      name    = "web-${var.env}"
       type    = "A"
       allow_overwrite = true
       alias   = {

@@ -1,6 +1,6 @@
 
 resource "aws_acm_certificate" "expense" {
-  domain_name       = "*.chowdary.cloud"
+  domain_name       = "*.${data.aws_route53_zone.zone.name}"
   validation_method = "DNS"
 
   tags = merge(

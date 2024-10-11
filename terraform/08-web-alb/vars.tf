@@ -4,11 +4,11 @@ variable "common_tags" {
     project   = "expense"
     env       = "dev"
     terraform = "true"
-    component = "backend"
+    component = "web-alb"
   }
 }
 variable "component" {
-  default = "backend"
+  default = "web-alb"
 }
 variable "env" {
   default = "dev"
