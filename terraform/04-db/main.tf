@@ -63,10 +63,22 @@ module "db" {
 
 }
 
-resource "aws_route53_record" "record" {
-  zone_id = data.aws_route53_zone.zone.id
-  name    = "db-${var.env}"
-  type    = "CNAME"
-  ttl     = "5"
-  records = [ module.db.db_instance_address ]  # Use public_ip instead of id
+
+module "records" {
+  source  = "terraform-aws-modules/route53/aws//modules/records"
+  version = "~> 2.0"
+
+  zone_name = data.aws_route53_zone.zone.name
+
+  records = [
+    {
+      name    = "db-${var.env}"
+      type    = "CNAME"
+      ttl = 1
+      allow_overwrite = true
+      records = [
+        module.db.db_instance_address
+      ]
+    }
+  ]
 }

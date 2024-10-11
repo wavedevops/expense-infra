@@ -22,15 +22,20 @@ data "aws_ssm_parameter" "public_subnet_id" {
   name = "/${var.project}/${var.env}/public_subnet_id"
 }
 
+data "aws_ssm_parameter" "web_alb_listener_arn_https" {
+  name = "/${var.project}/${var.env}/web_alb_listener_arn_https"
+}
 
-data "aws_ami" "ami_info" {
+
+data "aws_ami" "frontend_ami" {
   most_recent = true
-  owners = ["973714476881"]
+  owners = ["self"]
   filter {
     name = "name"
-    values = ["RHEL-9-DevOps-Practice"]
+    values = ["${var.project}-${var.env}-${var.component}"]
   }
 }
+
 
 data "aws_route53_zone" "zone" {
   name         = "chowdary.cloud"
