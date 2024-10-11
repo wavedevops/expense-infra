@@ -37,8 +37,6 @@ resource "aws_security_group_rule" "backend_vpn_ssh" {
   security_group_id = module.backend.sg_id
 }
 
-
-
 resource "aws_security_group_rule" "backend_vpn_http" {
   description = "vpn-http-sg"
   type              = "ingress"

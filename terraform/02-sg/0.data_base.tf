@@ -7,7 +7,7 @@ module "database" {
   project     = var.project
 }
 
-resource "aws_security_group_rule" "database" {
+resource "aws_security_group_rule" "database_backend" {
   description              = "database"
   type                     = "ingress"
   from_port                = 3306
