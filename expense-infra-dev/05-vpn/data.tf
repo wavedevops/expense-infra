@@ -25,5 +25,8 @@ data "aws_ami" "ami_info" {
         name   = "virtualization-type"
         values = ["hvm"]
     }
+}
 
+data "aws_route53_zone" "zone_id" {
+    name = "chowdary.cloud"
 }

@@ -1,5 +1,5 @@
 resource "aws_acm_certificate" "expense" {
-  domain_name       = "*.daws78s.online"
+  domain_name       = "*.${data.aws_route53_zone.zone_id.name}"
   validation_method = "DNS"
 
   tags = merge(
@@ -24,7 +24,7 @@ resource "aws_route53_record" "expense" {
   records         = [each.value.record]
   ttl             = 1
   type            = each.value.type
-  zone_id         = var.zone_id
+  zone_id         = data.aws_route53_zone.zone_id.id
 }
 
 resource "aws_acm_certificate_validation" "expense" {

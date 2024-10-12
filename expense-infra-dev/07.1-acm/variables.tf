@@ -15,10 +15,6 @@ variable "common_tags" {
   }
 }
 
-variable "zone_name" {
-  default = "daws78s.online"
-}
-
-variable "zone_id" {
-  default = "Z08884492QFPW45HM4UQO"
+data "aws_route53_zone" "zone_id" {
+  name = "chowdary.cloud"
 }
