@@ -43,3 +43,20 @@ resource "aws_route53_record" "record" {
 }
 
 ```
+```
+ This Cloud front distribution
+actually designed to deliver the CDN mechanism. 
+CDN  for "Content delivery Network"
+
+the geographical distance between the user
+and server increases so obviously
+latency also increase right
+ so to reduce our latency whatever the content we want
+to deliver we can place that content to
+nearby End customer geographical
+location
+
+all our content with very low or minimal latency
+
+to reduce the delays we are going to use this Cloud friend Distribution on top of this load balancer
+```
