@@ -34,3 +34,13 @@ data "aws_ami" "ami_info" {
         values = ["hvm"]
     }
 }
+
+
+data "aws_ami" "backend_ami" {
+  most_recent = true
+  filter {
+    name   = "name"
+    values = ["${var.project_name}-${var.environment}-${var.common_tags.Component}"]
+  }
+  owners = ["self"]
+}
