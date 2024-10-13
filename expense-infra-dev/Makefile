@@ -1,7 +1,7 @@
 .PHONY: apply destroy
 
 apply:
-	for dir in 05-app-alb 06-backend 07-acm 08-web-alb 09-frontend; do \
+	for dir in 06-app-alb 07-backend  08-web-alb 09-frontend; do \
 		echo "Applying in $$dir..."; \
 		(cd $$dir && make apply); \
 	done
