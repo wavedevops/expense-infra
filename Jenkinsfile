@@ -24,18 +24,19 @@ pipeline {
             }
         }
     }
-        stage ('terraform deploy'){
+        stage('Terraform Deploy') {
             input {
                 message "Should we continue?"
                 ok "Yes, we should."
-            steps { // terraform apply-auto-approve
+            }
+            steps {
                 sh """
                 cd 01-vpc
-                terraform apply --auto-approve 
+                terraform apply -auto-approve
                 """
             }
         }
-    }
+
     post {
         always {  // delete the workspace in a Jenkins Pipeline  && Safely delete the contents of 'workspace' and 'jobs' in Jenkins
             deleteDir()
