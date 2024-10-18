@@ -3,6 +3,7 @@ pipeline {
         label 'workstation'
     }
     options {
+        disableConcurrentBuilds()
         ansiColor('xterm')
     }
     stages {
