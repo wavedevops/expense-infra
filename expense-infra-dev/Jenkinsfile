@@ -1,0 +1,15 @@
+pipeline {
+    agent {
+        label 'workstation'
+    }
+    stages {
+        stage('Terraform Init') {
+            steps {
+                sh '''
+                cd 01-vpc
+                terraform init -reconfigure
+                '''
+            }
+        }
+    }
+}
