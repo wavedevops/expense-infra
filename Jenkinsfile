@@ -24,7 +24,7 @@ pipeline {
             }
         }
     }
-        stage ('Terraform Deploy') {
+        stage ('Terraform apply') {
             input {
                 message "Should we continue?"
                 ok "Yes, we should."
@@ -36,7 +36,6 @@ pipeline {
                 """
             }
         }
-
     post {
         always {  // delete the workspace in a Jenkins Pipeline  && Safely delete the contents of 'workspace' and 'jobs' in Jenkins
             deleteDir()
