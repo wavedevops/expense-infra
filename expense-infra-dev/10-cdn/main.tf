@@ -1,7 +1,7 @@
 resource "aws_cloudfront_distribution" "web_cdn" {
   origin {
-    domain_name              =  "web-${var.environment}.${var.zone_name}"#web-dev.daws78s.online
-    origin_id                = "web-${var.environment}.${var.zone_name}"
+    domain_name              =  "web-${var.environment}.${data.aws_route53_zone.zone.name}"#web-dev.chowdary.cloud
+    origin_id                = "web-${var.environment}.${data.aws_route53_zone.zone.name}"
     custom_origin_config  {
         http_port              = 80 // Required to be set but not used
         https_port             = 443
@@ -12,12 +12,12 @@ resource "aws_cloudfront_distribution" "web_cdn" {
 
   enabled             = true
 
-  aliases = ["web-${var.common_tags.Component}.${var.zone_name}"]#web-cdn.daws78s.online
+  aliases = ["web-${var.common_tags.Component}.${data.aws_route53_zone.zone.name}"]#web-cdn.daws78s.online
 
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "web-${var.environment}.${var.zone_name}"
+    target_origin_id = "web-${var.environment}.${data.aws_route53_zone.zone.name}"
 
     min_ttl                = 0
     default_ttl            = 86400
@@ -32,7 +32,7 @@ resource "aws_cloudfront_distribution" "web_cdn" {
     path_pattern     = "/images/*"
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
-    target_origin_id = "web-${var.environment}.${var.zone_name}"
+    target_origin_id = "web-${var.environment}.${data.aws_route53_zone.zone.name}"
 
     min_ttl                = 0
     default_ttl            = 86400
@@ -47,7 +47,7 @@ resource "aws_cloudfront_distribution" "web_cdn" {
     path_pattern     = "/static/*"
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
-    target_origin_id = "web-${var.environment}.${var.zone_name}"
+    target_origin_id = "web-${var.environment}.${data.aws_route53_zone.zone.name}"
 
     min_ttl                = 0
     default_ttl            = 86400
@@ -84,7 +84,7 @@ module "records" {
   source  = "terraform-aws-modules/route53/aws//modules/records"
   version = "~> 2.0"
 
-  zone_name = var.zone_name
+  zone_name = data.aws_route53_zone.zone.name
   
   records = [
     {

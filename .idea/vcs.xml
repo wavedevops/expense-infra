@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="VcsDirectoryMappings">
-    <mapping directory="" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/terraform/01-modules/terraform-aws-vpc" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/terraform/expense-infra-dev" vcs="Git" />
-  </component>
-</project>
