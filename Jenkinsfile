@@ -24,7 +24,7 @@ pipeline {
         }
     }
     post {
-        always {
+        always {  // delete the workspace in a Jenkins Pipeline  && Safely delete the contents of 'workspace' and 'jobs' in Jenkins
             deleteDir()
         }
         failure {
