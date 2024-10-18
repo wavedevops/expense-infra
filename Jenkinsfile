@@ -24,7 +24,7 @@ pipeline {
             }
         }
     }
-        stage('Terraform Deploy') {
+        stage ('Terraform Deploy') {
             input {
                 message "Should we continue?"
                 ok "Yes, we should."
