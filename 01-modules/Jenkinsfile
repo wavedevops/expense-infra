@@ -1,0 +1,16 @@
+pipeline{
+    agent {
+        label 'node1'
+    }
+    stages {
+        stage {
+            steps ("terraform init") {
+                sh '''
+                cd 01-vpc
+                terraform init -reconfigure
+                '''
+            }
+        }
+    }
+}
+
