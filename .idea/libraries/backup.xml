@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="backup">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/expense-infra-dev/04-db/.terraform/modules/db/examples/s3-import-mysql/backup.zip!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
