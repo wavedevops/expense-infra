@@ -11,8 +11,14 @@ apply:
 		(cd $$dir && make apply); \
 	done
 
-destroy:
-	for dir in 10-cdn 09-frontend 08-web-alb 07-backend 06-app-alb; do \
-		echo -e "$(YELLOW)Destroying in $(RED)$$dir$(RESET)..."; \
-		(cd $$dir && make destroy); \
-	done
+#destroy:
+#	for dir in 10-cdn 09-frontend 08-web-alb 07-backend 06-app-alb; do \
+#		echo -e "$(YELLOW)Destroying in $(RED)$$dir$(RESET)..."; \
+#		(cd $$dir && make destroy); \
+#	done
+
+#destroy:
+#	for dir in 05-vpn 04-db 03.ami 02-sg 01-vpc; do \
+#		echo -e "$(YELLOW)Destroying in $(RED)$$dir$(RESET)..."; \
+#		(cd $$dir && make destroy); \
+#	done
